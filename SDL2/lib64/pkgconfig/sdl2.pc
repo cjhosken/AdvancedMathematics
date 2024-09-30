@@ -1,6 +1,6 @@
 # sdl pkg-config source file
 
-prefix=/home/s5605094/Documents/SDL2/SDL2
+prefix=/run/media/s5605094/CJ_LabDrive/Studies/University/2nd/AdvancedMathematics/SDL2
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib64
 includedir=${prefix}/include
@@ -10,6 +10,5 @@ Description: Simple DirectMedia Layer is a cross-platform multimedia library des
 Version: 2.30.7
 Requires.private:  alsa
 Conflicts:
-Libs: -L${libdir} -Wl,-rpath,${libdir} -Wl,--enable-new-dtags  -lSDL2 
-Libs.private:  -lSDL2 -pthread  -lm -ldl
+Libs: -L${libdir}   -lSDL2    -lSDL2 -pthread  -lm -ldl
 Cflags: -I${includedir} -I${includedir}/SDL2  -D_REENTRANT

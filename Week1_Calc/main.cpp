@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h> // Include SDL_image for saving as PNG
+#include <SDL2/SDL_image.h>
 #include <iostream>
 
 int main()
