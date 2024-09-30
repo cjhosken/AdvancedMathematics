@@ -1,6 +1,5 @@
 #include <SDL.h>
 #include <SDL_image.h> // Include SDL_image for saving as PNG
-
 #include <iostream>
 
 int main()
@@ -13,6 +12,7 @@ int main()
 
     if (IMG_Init(IMG_INIT_PNG) == 0) {
         // Handle error
+        std::cout << "Failed to initialize SDL_image: " << IMG_GetError() << "\n";
         return 1;
     }
 
@@ -65,7 +65,9 @@ int main()
     Uint32 *pixels = (Uint32 *)window_surface->pixels;
     int pixel_x = 300;
     int pixel_y = 200;
-    pixels[(pixel_y * window_surface->w) + pixel_x] = pixel_color;
+    if (pixel_x < window_surface->w && pixel_y < window_surface->h) {
+        pixels[(pixel_y * window_surface->w) + pixel_x] = pixel_color;
+    }
 
     // Unlock the surface if it was locked
     if(SDL_MUSTLOCK(window_surface))
@@ -75,6 +77,9 @@ int main()
 
     // Update the window surface to reflect changes
     SDL_UpdateWindowSurface(window);
+
+    // Wait a moment to ensure the graphics are drawn before saving
+    SDL_Delay(100); // Small delay to allow for the surface to be updated
 
     // Save the surface as a PNG image
     if (IMG_SavePNG(window_surface, "image.png") != 0)
@@ -91,6 +96,7 @@ int main()
 
     // Cleanup and quit
     SDL_DestroyWindow(window);
+    IMG_Quit();  // Don't forget to quit IMG
     SDL_Quit();
 
     return 0;
