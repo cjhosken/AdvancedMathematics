@@ -1,0 +1,3 @@
+/run/media/s5605094/CJ_LabDrive/Studies/University/2nd/AdvancedMathematics/build/_deps/sdl2-subbuild/CMakeFiles/sdl2-populate.dir
+/run/media/s5605094/CJ_LabDrive/Studies/University/2nd/AdvancedMathematics/build/_deps/sdl2-subbuild/CMakeFiles/edit_cache.dir
+/run/media/s5605094/CJ_LabDrive/Studies/University/2nd/AdvancedMathematics/build/_deps/sdl2-subbuild/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,11 @@
+# Hashes of file build rules.
+1a5f4f1257d62d19eb8d17dfc449ea39 CMakeFiles/sdl2_image-populate
+ce33198d63c5ad6b29a6382f79f14bdb CMakeFiles/sdl2_image-populate-complete
+51aecda32d30f4e7799985618f4719af sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-build
+f061b8158c443fd01bd5a36e1df87559 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-configure
+b708501b6218e2a4f1b2bc6095c7de0a sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-download
+e72cdacbbdb1ff1af426e6aa863f6648 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-install
+4c536d8a4dffb408730e80e6e2a42f98 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-mkdir
+4884cb2fa65d1ed0ec37cdf5d0d1e3d4 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-patch
+8dcd855c488e9ff9e16c923486694aa8 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-test
+ba03d7471a159b59789fc6c4590884f6 sdl2_image-populate-prefix/src/sdl2_image-populate-stamp/sdl2_image-populate-update

@@ -1,23 +1,41 @@
-# We will always try to use a version > 3.1 if available
-cmake_minimum_required(VERSION 3.2)
-
+cmake_minimum_required(VERSION 3.24)
 project(AdvancedMathematics)
 
-# Set the C++ standard to use
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
-# Add target executable and the file it is built from
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+
+# Fetch SDL2
+FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-2.26.3
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+
+# Fetch SDL2_image
+FetchContent_Declare(
+    SDL2_image
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+    GIT_TAG release-2.6.3
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+
+# Optionally, set these variables before making available
+set(BUILD_SHARED_LIBS OFF)  # Change to ON if you want shared libraries
+set(SDL2IMAGE_INSTALL ON)
+
+# Make available
+FetchContent_MakeAvailable(SDL2 SDL2_image)
+
+# Add executable
 add_executable(main Week1_Calc/main.cpp)
 
-# Include directories for fmt and SDL2 (handled by vcpkg)
-include_directories("/public/devel/24-25/vcpkg/installed/x64-linux/include")
+# Link against SDL2 and SDL2_image libraries
+target_link_libraries(main PRIVATE SDL2::SDL2-static SDL2_image::SDL2_image-static SDL2main)
 
-# Find SDL2 using vcpkg and link it to the executable
-find_package(SDL2 REQUIRED)
-target_link_libraries(main SDL2::SDL2 SDL2::SDL2main)
-
-find_package(SDL2_image REQUIRED)
-target_link_libraries(main SDL2_image::SDL2_image)
-
-# Link libraries (in case additional directories are needed)
-link_libraries("/public/devel/24-25/vcpkg/installed/x64-linux/lib")
+# If you need to define main handling, uncomment this line
+# add_definitions(-DSDL_MAIN_HANDLED)

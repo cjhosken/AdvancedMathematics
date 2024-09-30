@@ -1,5 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h> // Include SDL_image for saving as PNG
+#include <SDL.h>
+#include <SDL_image.h> // Include SDL_image for saving as PNG
+
 #include <iostream>
 
 int main()
@@ -8,6 +9,11 @@ int main()
     {
         std::cout << "Failed to initialize the SDL2 library\n";
         return -1;
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        // Handle error
+        return 1;
     }
 
     SDL_Window *window = SDL_CreateWindow("SDL2 Window",
