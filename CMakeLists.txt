@@ -1,41 +1,29 @@
-cmake_minimum_required(VERSION 3.24)
-project(AdvancedMathematics)
+cmake_minimum_required(VERSION 3.2)
+project(SDL2_build)
+include(ExternalProject)
 
-set(CMAKE_CXX_STANDARD 20)
+set(InstallRoot ./SDL2 CACHE FILEPATH "Install root for dependencies")
 
-include(FetchContent)
-set(FETCHCONTENT_QUIET FALSE)
-
-# Fetch SDL2
-FetchContent_Declare(
+ExternalProject_Add(
     SDL2
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-2.26.3
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
+    URL https://www.libsdl.org/release/SDL2-2.30.7.tar.gz
+    INSTALL_DIR ${InstallRoot}
+    CMAKE_ARGS 
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DBUILD_SHARED_LIBS=OFF
 )
 
-# Fetch SDL2_image
-FetchContent_Declare(
+set(CHAIN SDL2)
+
+ExternalProject_Add(
     SDL2_image
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-    GIT_TAG release-2.6.3
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
+    URL https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-2.8.2.tar.gz
+    INSTALL_DIR ${InstallRoot}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DBUILD_SHARED_LIBS=OFF
+        -DSDL2_DIR=<INSTALL_DIR>
+    DEPENDS ${CHAIN}
 )
-
-# Optionally, set these variables before making available
-set(BUILD_SHARED_LIBS OFF)  # Change to ON if you want shared libraries
-set(SDL2IMAGE_INSTALL ON)
-
-# Make available
-FetchContent_MakeAvailable(SDL2 SDL2_image)
-
-# Add executable
-add_executable(main Week1_Calc/main.cpp)
-
-# Link against SDL2 and SDL2_image libraries
-target_link_libraries(main PRIVATE SDL2::SDL2-static SDL2_image::SDL2_image-static SDL2main)
-
-# If you need to define main handling, uncomment this line
-# add_definitions(-DSDL_MAIN_HANDLED)
+    
+set (CHAIN SDL2_image)

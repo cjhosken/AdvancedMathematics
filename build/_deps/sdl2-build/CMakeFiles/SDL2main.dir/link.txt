@@ -1,2 +1,0 @@
-/opt/rh/gcc-toolset-13/root/usr/bin/ar qc libSDL2main.a CMakeFiles/SDL2main.dir/src/main/dummy/SDL_dummy_main.c.o
-/opt/rh/gcc-toolset-13/root/usr/bin/ranlib libSDL2main.a

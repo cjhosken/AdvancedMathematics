@@ -1,1 +1,0 @@
-/opt/rh/gcc-toolset-13/root/usr/bin/cc CMakeFiles/showimage.dir/showimage.c.o -o showimage  libSDL2_image.a ../sdl2-build/libSDL2main.a ../sdl2-build/libSDL2.a -lm -ldl -lrt -pthread 
