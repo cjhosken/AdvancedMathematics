@@ -1,6 +1,6 @@
 # sdl pkg-config source file
 
-prefix=/run/media/s5605094/CJ_LabDrive/Studies/University/2nd/AdvancedMathematics/SDL2
+prefix=/home/s5605094/Documents/AdvancedMathematics/SDL2
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib64
 includedir=${prefix}/include
