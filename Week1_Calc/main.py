@@ -57,7 +57,7 @@ def main():
     am_canvas = AM_Canvas(1024, 1024, (0, 0, 0))
     am_canvas.draw()
     am_canvas.show()
-    am_canvas.save("Week0_Prep/image.png")
+    am_canvas.save("Week1_Calc/image.png")
 
 if __name__ == "__main__":
     main()
