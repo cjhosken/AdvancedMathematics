@@ -18,12 +18,11 @@ class AM_Canvas(am.AM_Canvas):
     def draw(self):
         super().draw()
 
-        
-
+    
         dt = 0.05
         offset_y = self.height/2
 
-        total = 0
+        total = -df(0, dt)
 
         self.canvas.line([(0, offset_y), (self.width, offset_y)], fill=(75, 75, 75))
 
