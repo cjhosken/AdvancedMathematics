@@ -1,5 +1,4 @@
 from math import *
-import pygame
 
 
 class AM_Torus():
@@ -46,9 +45,9 @@ class AM_Torus():
 
         return pts
 
-    def draw(self, canvas, res=(64, 32), color=(255, 255, 255), wire=False, screen=None):
+    def draw(self, canvas, res=(64, 32), color=(255, 255, 255), wire=False):
     
-        if wire or screen is not None:
+        if wire:
             u=0
             while u <= 1:
                 v = 0
@@ -104,10 +103,7 @@ class AM_Torus():
                         (pt2[2]/z2) * canvas.height/2 + canvas.height/2
                     )
                     
-                    if screen is not None:
-                        pygame.draw.lines(screen, self.color, False, [s1, s0, s2])
-                    else:
-                        canvas.canvas.line([s1, s0, s2], color)
+                    canvas.canvas.line([s1, s0, s2], color)
                     v += 1/res[1]
             
                 u += 1/res[0]
