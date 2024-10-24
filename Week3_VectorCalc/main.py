@@ -5,34 +5,37 @@ from random import random
 from math import *
 
 def hit(ray, objs):
+    final_color = (0, 0, 0)
+
     t = float("inf")
     color = (0, 0, 0)
-
+    n = (0, 0, 0)
+        
     for obj in objs:
-        t_new, t_color = obj.hit(ray)
+        t_new, n_new, t_color = obj.hit(ray)
 
         if t_new > 0 and t_new < t:
+            n = n_new
             t = t_new
             color = t_color
 
     #print(t)
     #print("COLOR:", color)
 
-    return color
 
+    return color
+    
 class AM_Canvas(am.AM_Canvas):
     def draw(self):
-        super().draw()
-
         objs = []
         for p in range(25):
             pos=(
                     (-0.5 + random()) * self.width/4, 
                     (-0.5 + random()) * self.height/4,
-                    600 + random() * 25
+                    50 + random() * 25
                 )
 
-            r = random()*50
+            r = random()*10
 
 
             sph = am.AM_Sphere(pos=pos, r=r, c=(int(random()*255), int(random()*255), int(random()*255)))
@@ -62,15 +65,17 @@ class AM_Canvas(am.AM_Canvas):
                 ray=[(0, 0, 0), direction]
                 #Cd = (int(ray[1][0] * 255), int(ray[1][1]*255), int(ray[1][2]*255))
 
+                Cd = (0, 0, 0)
 
                 Cd = hit(ray, objs)
 
                 self.image.putpixel((x, y), Cd)
+                print(f"Pixel: {x}, {y} completed!")
 
         self.image = self.image.transpose(Image.FLIP_TOP_BOTTOM)
 
 def main():
-    am_canvas = AM_Canvas(1024, 1024, (0, 0, 0))
+    am_canvas = AM_Canvas(256, 256, (0, 0, 0))
     am_canvas.draw()
     am_canvas.show()
     am_canvas.save("Week3_VectorCalc/image.png")

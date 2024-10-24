@@ -156,7 +156,7 @@ class AM_Sphere():
 
         # Check if the ray misses the sphere
         if d_squared > self.radius**2:
-            return -1, (0, 0, 0)
+            return -1, (0, 0, 0), (0, 0, 0)
 
         # thc is the distance from the closest approach to the intersection points
         thc = sqrt(self.radius**2 - d_squared)
@@ -171,7 +171,7 @@ class AM_Sphere():
         elif t1 > 0:
             t = t1
         else:
-            return -1, (0, 0, 0)  # No valid intersection
+            return -1, (0, 0, 0), (0, 0, 0)  # No valid intersection
 
         #print(t)
 
@@ -219,4 +219,4 @@ class AM_Sphere():
             int(self.color[2] * illum)
         )
 
-        return t, draw_color
+        return t, N, draw_color
