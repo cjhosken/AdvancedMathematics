@@ -33,9 +33,13 @@ def create_scene():
 
     scene = []
 
-    scene.append(
-        sphere((0, 0, 50), 10, (255, 0, 0))
-    )
+    for i in range(10):
+
+
+
+        scene.append(
+            sphere((random() * 25, random() * 25, random() * 25 + 15), random() * 5, (int(random() * 255), int(random() * 255), int(random() * 255)))
+        )
 
     return scene
 
