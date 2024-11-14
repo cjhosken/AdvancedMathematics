@@ -1,16 +1,18 @@
 #!/usr/bin/env python
-from random import random
+from random import random, seed
 from math import *
 import pygame
 import numpy as np
+import sys
 pygame.init()
 
 
 def randomF():
     return (random() - 0.5) * 2
 
-def sphere(pos, radius, shader) -> dict:
+def sphere(pos, radius, shader, name=str(random())) -> dict:
     return {
+        "name": name,
         "position": pos,
         "radius": radius,
         "shader": shader,
@@ -29,24 +31,27 @@ def create_scene():
 
     scene = []
 
-    for i in range(10):
+    for i in range(12):
 
         shader = {
             "color": (random() * 255.0, random() * 255.0, random() * 255.0),
-            "ambient": (255.0, 0.0, 0.0),
+            "ambient": (0.0, 0.0, 0.0),
             "diffuse": 0.0,
             "specular": 1,
             "roughness": 0.1 
         }
 
         scene.append(
-            sphere((randomF() * 25.0, randomF() * 25.0, random() * 25.0 + 15.0), random() * 5.0, shader)
+            sphere((randomF() * 7.0, randomF() * 7.0, random() * 5.0 + 15.0), random() * 2.5, shader)
         )
 
-    for i in range(1):
+    light_num = 3
+
+    for i in range(light_num):
         scene.append(
-            light((randomF() * 25.0, randomF() * 25.0, randomF() * 25.0), (255, 255, 255), random() * 25)
+            light((randomF() * 25.0, random() * 25.0 + 25, randomF() * 25.0), (255, 255, 255), random() * 50/light_num)
         )
+
 
     return scene
 
@@ -125,18 +130,26 @@ def shade_hit(hit, ray, scene):
     
 
     for light in lights:
-        L = P - np.array(light["position"])
+        L = np.array(light["position"]) - P
+        light_ray = (np.array(light["position"]), -L / np.linalg.norm(L))
+
+        block_hit = hit_scene(scene, light_ray)
+
+        if (block_hit["obj"] is not None):
+            if (block_hit["obj"] != obj):
+                continue
+
 
         incidentLight = np.array(light["color"]) * light["brightness"]/np.dot(L, L)
 
         L /= np.linalg.norm(L)
-        H = np.add(N, -L)/2
+        H = np.add(N, L)/2
         H /= np.linalg.norm(H)
 
         reflectivity = max(np.dot(N, H), 0)**(1/shader["roughness"]) * np.array(shader["color"])
 
         reflectedLight = incidentLight * reflectivity * shader["specular"]
-        diffuseLight = np.dot(N, -L) * shader["diffuse"] * np.array(shader["color"])
+        diffuseLight = np.dot(N, L) * shader["diffuse"] * np.array(shader["color"])
 
         out_Cd += reflectedLight + diffuseLight
     
@@ -162,7 +175,7 @@ def main():
     for y in range(0, height):
         for x in range(0, width):
             u = 2 * ((x / width) - 0.5)
-            v = 2 * ((y / height) - 0.5)
+            v = 2 * (((height - y) / height) - 0.5)
             fov = 1
 
             direction = np.array([u, v, fov])
