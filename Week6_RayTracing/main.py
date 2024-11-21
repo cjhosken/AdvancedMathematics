@@ -39,14 +39,15 @@ def create_scene():
             "ambient": (0.0, 0.0, 0.0),
             "diffuse": 0.0,
             "specular": 1,
-            "roughness": 0.1 
+            "roughness": 0.1,
+            "gloss": 1
         }
 
         scene.append(
             sphere((randomF() * 7.0, randomF() * 7.0, random() * 5.0 + 15.0), random() * 2.5, shader)
         )
 
-    light_num = 3
+    light_num = 1
 
     for i in range(light_num):
         scene.append(
@@ -112,12 +113,12 @@ def hit_scene(scene, ray):
         if obj["type"] == "prim":
             hit_obj = hit_object(obj, ray)
 
-            if hit_obj["t"] > 0 and hit_obj["t"] < hit["t"]:
+            if hit_obj["t"] > 0.0001 and hit_obj["t"] < hit["t"]:
                 hit = hit_obj
 
     return hit
 
-def shade_hit(hit, ray, scene):
+def shade_hit(hit, ray, scene, bounces=1):
     obj = hit["obj"]
     t = hit["t"]
     shader = obj["shader"]
@@ -153,18 +154,27 @@ def shade_hit(hit, ray, scene):
         diffuseLight = np.dot(N, L) * shader["diffuse"] * np.array(shader["color"])
 
         out_Cd += reflectedLight + diffuseLight
+
+    if (shader["gloss"] > 0):
+
+        R = ray[1] - 2 * np.dot(ray[1], N) * N
+
+        mirrorRay = (P, R)
+
+        mirrorHit = hit_scene(scene, mirrorRay)
+
+        if mirrorHit["obj"] is not None and mirrorHit["obj"] is not obj:
+            out_Cd += shade_hit(mirrorHit, mirrorRay, scene, bounces-1) * shader["gloss"]
     
     out_Cd += np.array(shader["ambient"])
 
-    out_Cd = np.clip(out_Cd, a_min=0, a_max=255.0)
-
-    return (int(out_Cd[0]), int(out_Cd[1]), int(out_Cd[2]))
+    return out_Cd
 
 def main():
     start_time = time.time()
 
-    width = 512
-    height = 512
+    width = 1024
+    height = 1024
     background = (0, 0, 0)
     canvas = pygame.display.set_mode((width,height))
 
@@ -172,41 +182,54 @@ def main():
     scene = create_scene()
 
     running = True
+    rendering = True
 
     canvas.fill(background)
 
-    for y in range(0, height):
-        for x in range(0, width):
-            u = 2 * ((x / width) - 0.5)
-            v = 2 * (((height - y) / height) - 0.5)
-            fov = 1
+    samples = 16
+    bounces = 3
 
-            direction = np.array([u, v, fov])
-            direction /= np.linalg.norm(direction)
+    while running:
+        if (rendering):
+            for y in range(0, height):
+                for x in range(0, width):
 
-            ray=[np.array([0, 0, 0]), direction]
+                    Cd = background
 
-            hit = hit_scene(scene, ray)
+                    for s in range(samples):
+                        u = 2 * ((x / width) - 0.5) 
+                        v = 2 * (((height - y) / height) - 0.5)
+                        if samples > 1:
+                            u += (randomF() / width)
+                            v += (randomF() / height)
+                        fov = 1
 
-            Cd = background
+                        direction = np.array([u, v, fov])
+                        direction /= np.linalg.norm(direction)
 
-            if hit["obj"] is not None:
-                Cd = shade_hit(hit, ray, scene)
+                        ray=[np.array([0, 0, 0]), direction]
 
-            canvas.set_at((x, y), Cd)
+                        hit = hit_scene(scene, ray)
 
-        print(f"{y/height * 100}% completed!")
+                        if hit["obj"] is not None:
+                            Cd += shade_hit(hit, ray, scene, bounces) / samples
 
-        pygame.display.update()
+                        Cd = np.clip(Cd, a_min=0, a_max=255.0)
+                        im_Cd = (int(Cd[0]), int(Cd[1]), int(Cd[2]))
+
+                        canvas.set_at((x, y), im_Cd)
+
+                print(f"{y/height * 100}% completed!")
+
+                pygame.display.update()
+
+            end_time = time.time()
+            print(f"Rendering took: {end_time - start_time} seconds!")
+        rendering = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-    end_time = time.time()
-    print(f"Rendering took: {end_time - start_time} seconds!")
-
-    
     
     pygame.quit()
 
