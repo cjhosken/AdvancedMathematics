@@ -204,9 +204,11 @@ def create_kernel(arr, type="gaussian"):
 
     # The box filter is simple a box filled white by iterating over the pixels. Other colors can be specified but for the sake of this assignment it has been left as white.
     if type == "box":
-        for x in range(0, 50):
-            for y in range(0, 50):
-                kernel[x][y] = (255, 255, 255)
+        color = (255, 255, 255)
+
+        for x in range(0, 25):
+            for y in range(0, 25):
+                kernel[x][y] = color
 
 
     # Gaussian is a "smoothed circle". It has a much softer blur as there isn't a sharp overlap like with box filtering.
@@ -216,8 +218,9 @@ def create_kernel(arr, type="gaussian"):
     elif type == "gaussian":
         sigma = 10
 
-        for x in range(0, arr.shape[0]):
-            for y in range(0, arr.shape[1]):
+        for x in range(0, kernel.shape[0]):
+            for y in range(0, kernel.shape[1]):
+                # The 2D Gaussian distribution
                 kernel[x][y] = 0.5 * math.pi * sigma**2 * np.exp(-(x**2 + y**2)/(2*sigma**2))
                 
     return kernel
