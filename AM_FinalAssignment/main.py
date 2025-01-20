@@ -111,7 +111,7 @@ def create_kernel(arr, type="box"):
         # Define a box filter: 40% of image size
         y_start, y_end = int(arr.shape[0] * 0.4), int(arr.shape[0] * 0.6)
         x_start, x_end = int(arr.shape[1] * 0.4), int(arr.shape[1] * 0.6)
-        kernel[y_start:y_end, x_start:x_end] = 255  # Set the box region to 255 (white)
+        kernel[y_start:y_end, x_start:x_end] = (25, 255, 255)  # Set the box region to 255 (white)
 
     return kernel
 
