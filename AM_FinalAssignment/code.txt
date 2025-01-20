@@ -4,7 +4,7 @@ from PIL import Image
 
 def main():
     # Load the image and convert it into a NumPy data array. 
-    image = Image.open("./source.png").convert("RGB")
+    image = Image.open("./image.png").convert("RGB")
     arr = np.array(image, dtype=np.float64)
 
     # Apply 2D FFT on the image array
@@ -15,17 +15,19 @@ def main():
     cfft_spectrum = (cfft_spectrum / np.max(cfft_spectrum)) * 255
     cfft_image = Image.fromarray(np.uint8(cfft_spectrum * 255))  # Clip values between 0 and 255
     cfft_image.show()
-    cfft_image.save("./fourier.png")
+    cfft_image.save("./cfft.png")
 
     kernel = create_kernel(arr, "gaussian")
     kernel /= np.max(kernel)
     kern_arr = ff2d_transform(kernel)
     kern_shape = Image.fromarray(np.uint8(kernel * 255))  # Clip values between 0 and 255
     kern_shape.show()
+    kern_shape.save("./kern_shape.png")
 
     kern_spectrum = np.abs(kern_arr)
     kern_image = Image.fromarray(np.uint8(kern_spectrum/np.max(kern_spectrum) * 255))  # Clip values between 0 and 255
     kern_image.show()
+    kern_image.save("./kern.png")
 
     mult_arr = (cfft_arr * kern_spectrum)
 
@@ -123,6 +125,8 @@ def create_kernel(arr, type="box"):
                 kernel[x][y] = 255
 
     elif type == "gaussian":
+        center = (0, 0)
+
         sigma = 10
 
         for x in range(0, arr.shape[0]):
