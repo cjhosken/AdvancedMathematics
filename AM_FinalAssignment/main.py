@@ -31,10 +31,11 @@ def main(im_path="./source.png", out_path="./output.png", filter="gaussian"):
     arr = np.array(image, dtype=np.float64)
 
     # Use a 2d implementation of Fast Fourier Transform to get the image frequencies
-    cfft_arr = np.abs(ff2d_transform(arr))
+    cfft_arr = ff2d_transform(arr)
+    cfft_spectrum = cfft_arr
 
     # Display the CFFT (Color Fast Fourier Transform).
-    cfft_image = Image.fromarray(np.uint8(cfft_arr * 255)) 
+    cfft_image = Image.fromarray(np.uint8(np.abs(cfft_spectrum) * 255)) 
     cfft_image.show()
 
     # Create a convolution kernel to blur the image.
@@ -43,26 +44,28 @@ def main(im_path="./source.png", out_path="./output.png", filter="gaussian"):
     kernel /= np.max(kernel)
 
     # Display the convolution kernel
-    kern_shape = Image.fromarray(np.uint8(kernel * 255)) 
-    kern_shape.show()
+    kernel_shape_image = Image.fromarray(np.uint8(kernel * 255)) 
+    kernel_shape_image.show()
 
     # Fourier Transform the kernel so that it can be multiplied with the CFFT.
-    kern_arr = np.abs(ff2d_transform(kernel))
+    kernel_arr = ff2d_transform(kernel)
+    kernel_spectrum = np.abs(kernel_arr)
 
     # Display the FFT Kernel
-    kern_image = Image.fromarray(np.uint8(kern_arr/np.max(kern_arr) * 255)) 
-    kern_image.show()
+    kernel_fft_image = Image.fromarray(np.uint8(kernel_spectrum/np.max(kernel_spectrum) * 255)) 
+    kernel_fft_image.show()
 
     # Multiply the transformed convolution kernel with the transformed image.
     # This will blur the image.
-    mult_arr = (cfft_arr * kern_arr)
+    mult_arr = (cfft_spectrum * kernel_spectrum)
 
     # ICFFT the multiplied array so that it can be turned back into an image. We only need the real numbers.
-    out_arr = np.real(ff2d_transform(mult_arr, inv=True))
+    out_arr = ff2d_transform(mult_arr, inv=True)
+    out_image = np.real(out_arr)
 
     ### Code from ChatGPT
     ### prompt: "make sure the image is not over or under exposed."
-    out_image = (out_arr - np.min(out_arr)) / (np.max(out_arr) - np.min(out_arr)) * 255 
+    out_image = (out_image - np.min(out_image)) / (np.max(out_image) - np.min(out_image)) * 255 
     ###
     
     # Save the blurred image to the out_path
@@ -88,11 +91,9 @@ def ff2d_transform(arr, inv=False):
     f0_arr = np.zeros_like(arr, dtype=np.complex128)
     f1_arr = np.zeros_like(arr, dtype=np.complex128)
     
-
     # Do CFFT for all the rows in the image.
     for idx, row in enumerate(arr):
         f0_arr[idx] = color_transform(row, inv)
-
 
     # Flip the rows and columns in the CFFT image.
     # Ideally, something like array.T or array.transpose would be used, 
@@ -222,5 +223,5 @@ def create_kernel(arr, type="gaussian"):
     return kernel
     ###
 
-
-main()
+if __name__ == "__main__":
+    main("./source.png", "./output.png", "gaussian")
