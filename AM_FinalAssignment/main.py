@@ -16,11 +16,22 @@ def main():
     cfft_image.show()
     cfft_image.save("./cfft.png")
 
+    kernel = create_kernel(arr, "box")
+    kern_arr = ff2d_transform(kernel)
+
+    kern_spectrum = np.abs(kern_arr)
+    kern_spectrum = np.clip(kern_spectrum/np.max(kern_spectrum), 0, 1)
+    kern_image = Image.fromarray(np.uint8(kern_spectrum*255))  # Clip values between 0 and 255
+    kern_image.show()
+    kern_image.save("./kern.png")
+
+    mult_arr = (cfft_arr * kern_spectrum)
+
     # Apply 2D Inverse FFT to get back the image
-    back_arr = ff2d_transform(cfft_arr, inv=True)/len(arr)
+    back_arr = ff2d_transform(mult_arr, inv=True)
 
     # Since the result might have small imaginary parts, we use the real part
-    back_image = np.real(back_arr)
+    back_image = np.real(back_arr)/len(arr)
     back_image = Image.fromarray(np.uint8(np.clip(back_image, 0, 255)))
     back_image.show()
     back_image.save("./output.png")
@@ -91,6 +102,18 @@ def fft(arr, inv=False):
 
     return result
 
+
+def create_kernel(arr, type="box"):
+    # Create a simple kernel (box filter)
+    kernel = np.zeros_like(arr, dtype=np.float64)
+
+    if type == "box":
+        # Define a box filter: 40% of image size
+        y_start, y_end = int(arr.shape[0] * 0.4), int(arr.shape[0] * 0.6)
+        x_start, x_end = int(arr.shape[1] * 0.4), int(arr.shape[1] * 0.6)
+        kernel[y_start:y_end, x_start:x_end] = 255  # Set the box region to 255 (white)
+
+    return kernel
 
 
 main()
